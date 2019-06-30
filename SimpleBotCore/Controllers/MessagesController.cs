@@ -14,9 +14,9 @@ namespace SimpleBotCore.Controllers
     [Route("api/[controller]")]
     public class MessagesController : Controller
     {        
-        private readonly UsuarioService _usuarioService;
+        private readonly IUsuarioService _usuarioService;
         public static int contador = 1;
-        public MessagesController(UsuarioService usuarioService)
+        public MessagesController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
         }

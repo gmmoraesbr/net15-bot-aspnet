@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using SimpleBotCore.Logic;
 using SimpleBotCore.Moldes;
+using SimpleBotCore.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,38 +9,27 @@ using System.Threading.Tasks;
 
 namespace SimpleBotCore.Services
 {
-    public class UsuarioService
+    public class UsuarioService : IUsuarioService
     {
-        private readonly IMongoCollection<Usuario> _usuarios;
-        
-        public UsuarioService(IUsuariostoreDatabaseSettings settings)
-        {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
+        private readonly IUsuarioRepository _usuarioRepository;
 
-            _usuarios = database.GetCollection<Usuario>(settings.UsuarioCollectionName);
-        }
+        public UsuarioService(IUsuarioRepository usuarioRepository) => _usuarioRepository = usuarioRepository;
 
-        public List<Usuario> Get() =>
-            _usuarios.Find(book => true).ToList();
+        public List<Usuario> Get() => _usuarioRepository.Get();
 
-        public Usuario Get(string id) =>
-            _usuarios.Find<Usuario>(usuario => usuario.Id == id).FirstOrDefault();
+        public Usuario Get(string id) => _usuarioRepository.Get(id);
 
         public string Create(Usuario usuario, int contador)
         {
-            _usuarios.InsertOne(usuario);
+            _usuarioRepository.Create(usuario, contador);
 
-            return $"{usuario.Username} disse na mensagem {contador}: '{usuario.Text}' "; ;
+            return $"{usuario.Username} disse na mensagem {contador}: '{usuario.Text}' ";
         }
 
-        public void Update(string id, Usuario usuarioIn) =>
-            _usuarios.ReplaceOne(x => x.Id == id, usuarioIn);
+        public void Update(string id, Usuario usuarioIn) => _usuarioRepository.Update(id, usuarioIn);
 
-        public void Remove(Usuario usuarioIn) =>
-            _usuarios.DeleteOne(x => x.Id == usuarioIn.Id);
+        public void Remove(Usuario usuarioIn) => _usuarioRepository.Remove(usuarioIn);
 
-        public void Remove(string id) =>
-            _usuarios.DeleteOne(x => x.Id == id);
+        public void Remove(string id) => _usuarioRepository.Remove(id);
     }
 }

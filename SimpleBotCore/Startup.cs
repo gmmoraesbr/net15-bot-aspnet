@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SimpleBotCore.Logic;
 using SimpleBotCore.Moldes;
+using SimpleBotCore.Repository;
 using SimpleBotCore.Services;
 
 namespace SimpleBotCore
@@ -32,7 +33,8 @@ namespace SimpleBotCore
             services.AddSingleton<IUsuariostoreDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<UsuarioDatabaseSettings>>().Value);
 
-            services.AddSingleton<UsuarioService>();
+            services.AddSingleton<IUsuarioService, UsuarioService>();
+            services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
             //services.AddSingleton<SimpleBotUser>();
             services.AddMvc();
         }
